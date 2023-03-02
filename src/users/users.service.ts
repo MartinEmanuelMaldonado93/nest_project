@@ -13,20 +13,23 @@ export class UsersService {
     return 'a';
   }
   /** This function returns the entire list of users */
-  public async findAll() {
+  async findAll() {
     const users = await this.userModel.find();
+    if (!users) throw new Error('user is not found');
     return users;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findOneByID(id: string) {
+    const user = await this.userModel.findById(id);
+    if (!user) throw new Error('User is not found');
+    return user;
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  async update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} user`;
   }
 }

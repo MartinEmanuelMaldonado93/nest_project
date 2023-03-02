@@ -18,16 +18,16 @@ import { HttpStatus } from '@nestjs/common/enums/http-status.enum';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
-  }
+  // @Post()
+  // create(@Body() createUserDto: CreateUserDto) {
+  //   return this.usersService.create(createUserDto);
+  // }
 
-  @Get()
-  findAll(@Res() res: Response) {
-    const data = this.usersService.findAll();
+  @Get('all')
+  async findAll(@Res() res: Response) {
+    const data = await this.usersService.findAll();
     res.status(HttpStatus.OK).json({
-      data,
+      data: data,
       code: 200,
       message: 'successfully fetch data',
       success: true,
@@ -35,9 +35,19 @@ export class UsersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    // if (Number.isNaN(+id)) return null;
-    return this.usersService.findOne(+id);
+  async findOneByID(@Res() res: Response, @Param('id') id: string) {
+    // if (Number.isNaN(+id)) throw new Error('Id must be a number');
+    const data = await this.usersService.findOneByID(id);
+    try {
+      res.status(HttpStatus.OK).json({
+        data,
+        code: 200,
+        message: 'successfully fetch data',
+        success: true,
+      });
+    } catch (error) {
+      throw new Error(`findOne error`);
+    }
   }
 
   @Patch(':id')
